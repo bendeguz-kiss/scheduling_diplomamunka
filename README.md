@@ -1,1 +1,1 @@
-# -temez-s-diplomamunka
+# diplomamunka
