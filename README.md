@@ -1,1 +1,1 @@
-# diplomamunka
+# scheduling_diplomamunka
