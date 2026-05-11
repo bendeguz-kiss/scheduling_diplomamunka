@@ -1,0 +1,70 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsthm}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\numberwithin{equation}{section}
+\newtheorem{ex}{Exercise}
+\newtheorem{clm}{Claim}
+\newtheorem{rmk}{Remark}
+
+
+\title{Resource leveling problem with two machines}
+\author{Bendegúz Kiss}
+\date{May 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{ex}
+    We are given the following scheduling problem: we have to schedule $2T$ jobs on two machines over $T$ possible time periods. Each job has a duration of 1. The required resource rate of the $i$-th job is denoted by $R_i$. There are no precedence constraints. We are also given a $g:\mathbb R \mapsto \mathbb{R}$ convex function. The goal is to minimize the following expression:
+    \begin{equation}
+        \sum_{i=1}^T g(y_i)
+    \end{equation}
+    where $y_i$ is the total resource rate in the $i$-th time period.
+    \end{ex}
+
+\begin{clm}
+    We obtain an optimal solution by the following procedure: sort the jobs by their resource rates and schedule the $k$-th largest and the $k$-th smallest job in the same time period.    
+\end{clm}
+
+\begin{proof}
+    Indirectly assume that no such optimal solution exists and every optimal solution contains at least one pair that is not scheduled right. Let $S$ be an  optimal solution for which every $i=1 \dots k-1$ the $i$-th largest job and the $i$-th smallest job are scheduled correctly, but this does not hold for $k$.
+
+
+    Notations:
+\begin{enumerate}
+    \item $a$ = the $k$-th largest job
+    \item $b$ = the job paired with $a$ in $S$
+    \item $c$ = the job paired with $d$ in $S$
+    \item $d$ = the $k$-th smallest job
+\end{enumerate}
+
+We need to show that we can swap $b$ with $d$ while the cost does not drop, i.e:
+$$g(r_a+r_d) + g(r_b+r_c) \leq g(r_a+r_b) + g(r_c+r_d)$$
+For an $f : \mathbb{R} \mapsto \mathbb{R}$ convex function we know the following: $$\frac{f(y)-f(x)}{y-x} \leq \frac{f(y)-f(z)}{y-z}$$
+for any $x<y<z$ where $x,y,z \in \mathbb{R}$.
+Using this for $r_c+r_d<r_c+r_b<r_a+r_b$ and $r_c+r_d<r_a+r_d<r_a+r_b$ and for the function $g$ we get the following inequalities:
+$$\frac{g(r_c+r_b)-g(r_c+r_d)}{r_b-r_d} \leq \frac{g(r_a+r_b)-g(r_c+r_b)}{r_a-r_c}$$
+$$\frac{g(r_a+r_d)-g(r_c+r_d)}{r_a-r_c} \leq \frac{g(r_a+r_b)-g(r_a+r_d)}{r_b-r_d}$$
+We mention $r_b > r_d$ and $r_a > r_c$ because otherwise $a$ and $c$ or $b$ and $d$ are paired correctly.
+After adding the two inequalities and making some simplifications:
+$$(r_b-r_d+r_a-r_c)g(r_a+r_d) + (r_b-r_d+r_a-r_c)g(r_b+r_c) \leq (r_b-r_d+r_a-r_c)g(r_a+r_b) + (r_b-r_d+r_a-r_c)g(r_c+r_d)$$
+Since $a \geq c$ and $b \geq d$ we get $b-d+a-c \geq 0$, so we can divide the two sides by this value, which proves the claim.
+\end{proof}
+
+\begin{rmk}
+.The algorithm also works with less than $2T$ jobs. We just add jobs to our problem with resource rate 0 and duration 1 until we get $2T$ jobs.
+\end{rmk}
+\end{document}
