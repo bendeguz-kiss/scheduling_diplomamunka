@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx} % Required for inserting images
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\title{Dynamic programming for optimal start times}
+\author{Bendegúz Kiss}
+\date{May 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Task}
+We start with a given schedule for our resource leveling problem. Our task is to improve our solution by rescheduling our jobs. The first approach considers finding the optimal start times on one machine with a fixed order, while the other machines' schedule is fixed. We present a dynamic programming approach to deal with this problem.
+
+\section{Preliminaries}
+
+\subsection{Problem description}
+Suppose that we want to optimize on the first machine. The other machines are fixed, so there is a fixed resource rate in every time period. Denote this by $B_t$ for every $t \in T$. Let $x_t$ be the resource rate of the active job in time $t$ on the first machine, which is 0 if there are no active jobs in time $t$. Our goal is to minimize the following objective function:
+$$\sum_t g(B_t+x_t)$$
+
+\subsection{Computing possible time intervals for job start times}
+
+\section{The dynamic programming approach}
+The following algorithm also works if we have precedence constraints between the jobs. We start the algorithm by computing the earliest and latest possible start times of the jobs as seen above. We denote them by $ES_i$ and $LS_i$ for every $i \in J$. 
+
+\subsection{The algorithm}
+We define the following subproblem 
+$$D(i,t)$$
+as the minimum additional cost that can occur, if we schedule the first $i$ jobs on the machine and the $i$-th job starts at $t$. If $t \notin [ES_i,LS_i]$ for a job $i$, then we set $D(i,t)$ at infinity. We initialize the dynamic program $D(0,0) = 0$ and $p_0 = 0$. The general step of the dynamic program is the following:
+$$D(i,t) = \min_{t' \leq t-p_{i-1}} D(i-1,t') + c(i,t)$$
+where $c(i,t)$ is the additional cost that occurs when the $i$-th job starts from the $t$ time period. Formally:
+$$c(i,t) = \sum_{u = t}^{t+p_i-1} g(B_u + r_i) - g(B_u)$$
+We can observe that $D(1,t) = c(1,t)$. The optimal value is:
+$$\min_{t} D(n,t)$$
+
+
+To build the optimal schedule, for each $D(i,t)$ state, we store the optimal start time of the predecessor job during the algorithm: 
+$$p(i,t) = \argmin_{t' \leq t-p_{i-1}} D(i-1,t')$$
+.
+After computing all states, we obtain our solution by backtracking from the optimal terminal state. Denote by $s_i$ the optimal start time of the $i$-th job in the schedule. Suppose that $t^* = \argmin_{t} D(n,t)$. Then the optimal start time of the last job is $t^*$, so $s_n = t^*$. We get the other $s_i$ values using the following formula:
+$$s_{i-1} = p(i,s_{i}) \quad i = n \dots 2$$
+
+
+The running time of the algorithm is $O(nT^2)$, since the dynamic program has $O(nT)$ states, and for each state we compute a minimum over $O(T)$ values.
+
+
+
+\subsection{Representing the algorithm as finding a shortest path in an acyclic graph}
+\end{document}
